@@ -1,0 +1,6 @@
+title: My Site
+description: Minimal Jekyll + GitHub Pages setup
+theme: jekyll-theme-primer
+
+# Keep source as root unless you really want "docs"
+source: .
