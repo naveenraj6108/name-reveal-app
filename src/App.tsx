@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 function App() {
   const [name, setName] = React.useState("NAVEENRAJ");
   const [runAnimation, setRunAnimation] = React.useState(false);
-  const [background, setBackground] = React.useState("/textfire.mp4");
   const getShuffledName = () => {
     const shuffled = name.split("").sort(() => Math.random() - 0.5);
     return shuffled.join("");
@@ -153,6 +152,7 @@ function App() {
       clearInterval(letterDisplayInterval);
       clearInterval(checkAllDone);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, runAnimation]);
 
   return (
@@ -196,7 +196,7 @@ function App() {
                   className="block-video"
                 />
                 <video
-                  src={background}
+                  src={"/textfire.mp4"}
                   autoPlay
                   loop
                   muted
