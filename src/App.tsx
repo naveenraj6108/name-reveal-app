@@ -3,17 +3,17 @@ import "./App.css";
 import React, { useEffect } from "react";
 
 function App() {
-  const [name, setName] = React.useState("NAVEENRAJ");
-  const [runAnimation, setRunAnimation] = React.useState(false);
+  const [name, setName] = React.useState("NAVIZHYAN");
+  const [runAnimation, setRunAnimation] = React.useState(true);
+  const revealNameRef = React.useRef<HTMLDivElement>(null);
   const getShuffledName = () => {
     const shuffled = name.split("").sort(() => Math.random() - 0.5);
     return shuffled.join("");
   };
-
   const getNameOrder = () => {
     const order = Array.from({ length: name.length }, () => 0);
     const used = new Set<number>();
-    const letters = document.querySelectorAll(
+    const letters = revealNameRef.current?.querySelectorAll(
       ".block"
     ) as NodeListOf<HTMLElement>;
     name.split("").forEach((ch, nameInd) => {
@@ -40,7 +40,7 @@ function App() {
     let cornerInterval: NodeJS.Timer;
     let checkAllDone: NodeJS.Timer;
     let nameInd = 0;
-    const blocks = document.querySelectorAll(
+    const blocks = revealNameRef.current?.querySelectorAll(
       ".block"
     ) as NodeListOf<HTMLElement>;
     if (name && runAnimation) {
@@ -48,10 +48,11 @@ function App() {
       letterDisplayInterval = setInterval(() => {
         if (nameInd < name.length) {
           blocks[nameInd]?.style.setProperty("--ind", `${letterIndex}em`);
-          blocks[nameInd]?.style.setProperty(
-            "animation",
-            "zoomOut 1.5s ease-in-out forwards"
-          );
+          // blocks[nameInd]?.style.setProperty(
+          //   "animation",
+          //   "zoomOut 1.5s ease-in-out forwards"
+          // );
+          blocks[nameInd]?.classList.add("zoom-out");
           blocks[nameInd]?.style.setProperty("opacity", "1");
           letterIndex--;
           nameInd++;
@@ -96,7 +97,9 @@ function App() {
         }, 1000);
       }, (name.length + 1) * 1500);
       cornerTimeout = setTimeout(() => {
-        const container = document.querySelector(".text-box") || document.body;
+        const container = revealNameRef.current?.querySelector(
+          ".text-box"
+        ) as HTMLElement;
         function moveBlocks() {
           const containerWidth = container.clientWidth - 800;
           const containerHeight = container.clientHeight - 500;
@@ -152,11 +155,11 @@ function App() {
       clearInterval(letterDisplayInterval);
       clearInterval(checkAllDone);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, runAnimation]);
 
   return (
-    <div className="App">
+    <div className="App" ref={revealNameRef}>
       <video
         src="/background.mp4"
         autoPlay
@@ -165,7 +168,7 @@ function App() {
         className="background-video"
       />
       <video
-        src="/textBG.mp4"
+        src="/textBG.3gp"
         autoPlay
         loop
         muted
@@ -188,13 +191,6 @@ function App() {
             .split("")
             .map((char, index) => (
               <div key={index} className="block" data-child={index + 1}>
-                <video
-                  src={"/textfire5.3gp"}
-                  loop
-                  autoPlay
-                  muted
-                  className="block-video"
-                />
                 <video
                   src={"/textfire.mp4"}
                   autoPlay
