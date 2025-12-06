@@ -29,6 +29,8 @@ function App() {
     return order;
   };
 
+  const shuffledName = React.useMemo(() => getShuffledName(), [name]);
+
   useEffect(() => {
     let blockLimit = 15000;
     let cornerLimit = 10000;
@@ -187,17 +189,17 @@ function App() {
         </div>
       ) : (
         <div className="text-box">
-          {getShuffledName()
+          {shuffledName
             .split("")
             .map((char, index) => (
               <div key={index} className="block" data-child={index + 1}>
-                <video
+                {/* <video
                   src={"/textfire.mp4"}
                   autoPlay
                   loop
                   muted
                   className="text-video"
-                />
+                /> */}
                 <div className="letter">{char}</div>
               </div>
             ))}
