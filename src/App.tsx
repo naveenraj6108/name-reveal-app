@@ -8,10 +8,10 @@ function App() {
   const [name, setName] = React.useState("");
   const [runAnimation, setRunAnimation] = React.useState(false);
   const revealNameRef = React.useRef<HTMLDivElement>(null);
-  const getShuffledName = () => {
+  const getShuffledName = React.useCallback(() => {
     const shuffled = name.split("").sort(() => Math.random() - 0.5);
     return shuffled.join("");
-  };
+  }, [name]);
   const getNameOrder = () => {
     const order = Array.from({ length: name.length }, () => 0);
     const used = new Set<number>();
@@ -34,7 +34,10 @@ function App() {
     return order;
   };
 
-  const shuffledName = React.useMemo(() => getShuffledName(), [name]);
+  const shuffledName = React.useMemo(
+    () => getShuffledName(),
+    [getShuffledName]
+  );
 
   useEffect(() => {
     let blockLimit = 15000;
