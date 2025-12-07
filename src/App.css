@@ -2,6 +2,11 @@
   position: relative;
 }
 
+body {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", Arial,
+    sans-serif;
+}
+
 .letter {
   display: flex;
   align-items: center;

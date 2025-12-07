@@ -2,9 +2,11 @@ import "./App.css";
 
 import React, { useEffect } from "react";
 
+const emoji = "\uD83D\uDE0E";
+
 function App() {
-  const [name, setName] = React.useState("NAVIZHYAN");
-  const [runAnimation, setRunAnimation] = React.useState(true);
+  const [name, setName] = React.useState("");
+  const [runAnimation, setRunAnimation] = React.useState(false);
   const revealNameRef = React.useRef<HTMLDivElement>(null);
   const getShuffledName = () => {
     const shuffled = name.split("").sort(() => Math.random() - 0.5);
@@ -19,7 +21,10 @@ function App() {
     name.split("").forEach((ch, nameInd) => {
       for (let letterInd = 0; letterInd < letters.length; letterInd++) {
         const letter = letters[letterInd];
-        if (letter.textContent === ch && !used.has(letterInd)) {
+        if (
+          letter.textContent === (ch === "*" ? emoji : ch) &&
+          !used.has(letterInd)
+        ) {
           order[letterInd] = nameInd;
           used.add(letterInd);
           break;
@@ -50,10 +55,6 @@ function App() {
       letterDisplayInterval = setInterval(() => {
         if (nameInd < name.length) {
           blocks[nameInd]?.style.setProperty("--ind", `${letterIndex}em`);
-          // blocks[nameInd]?.style.setProperty(
-          //   "animation",
-          //   "zoomOut 1.5s ease-in-out forwards"
-          // );
           blocks[nameInd]?.classList.add("zoom-out");
           blocks[nameInd]?.style.setProperty("opacity", "1");
           letterIndex--;
@@ -160,6 +161,23 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, runAnimation]);
 
+  function padText(text: string): string {
+    const currentLength = text.length;
+
+    if (currentLength >= 9) return text;
+
+    const totalPadding = 9 - currentLength;
+    const sidePadding = Math.floor(totalPadding / 2);
+    const remainder = totalPadding % 2;
+
+    return "*".repeat(sidePadding) + text + "*".repeat(sidePadding + remainder);
+  }
+
+  const updateName = (inputName: string) => {
+    if (inputName.trim().length > 9) return;
+    setName(padText(inputName));
+  };
+
   return (
     <div className="App" ref={revealNameRef}>
       <video
@@ -178,31 +196,36 @@ function App() {
       />
       {!runAnimation ? (
         <div className="input-container">
-          <label htmlFor="name-input">Enter your name:</label>
+          <label htmlFor="name-input" style={{ color: "white" }}>
+            Enter your name:
+          </label>
           <input
             id="name-input"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value.toUpperCase())}
+            value={name.replace(/\*/g, "")}
+            onChange={(e) => updateName(e.target.value.toUpperCase())}
           />
-          <button onClick={() => setRunAnimation(true)}>Start Animation</button>
+          <button
+            onClick={() => setRunAnimation(true)}
+            disabled={name.trim().length === 0}
+          >
+            Start Animation
+          </button>
         </div>
       ) : (
         <div className="text-box">
-          {shuffledName
-            .split("")
-            .map((char, index) => (
-              <div key={index} className="block" data-child={index + 1}>
-                {/* <video
+          {shuffledName.split("").map((char, index) => (
+            <div key={index} className="block" data-child={index + 1}>
+              {/* <video
                   src={"/textfire.mp4"}
                   autoPlay
                   loop
                   muted
                   className="text-video"
                 /> */}
-                <div className="letter">{char}</div>
-              </div>
-            ))}
+              <div className="letter">{char === "*" ? emoji : char}</div>
+            </div>
+          ))}
         </div>
       )}
     </div>
